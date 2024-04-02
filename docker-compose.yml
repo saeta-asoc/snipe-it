@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  snipeit:
+    container_name: snipeit
+    restart: always
+    image: snipe/snipe-it:latest
+    volumes:
+      - ./cert:/var/lib/snipeit/ssl
+      - ./script/init.sh:/usr/local/bin/init.sh
+    env_file:
+      - ./.env
+    ports:
+      - 80:80
+      - 443:443
+
+  snipeit_db:
+    container_name: snipeit_db
+    restart: always
+    image: mysql:5.6
+    env_file:
+      - ./.env
+    volumes:
+      - ./snipeit_db:/var/lib/mysql
+    ports:
+      - 3306:3306
