@@ -123,7 +123,7 @@ resource "aws_security_group" "snipeit" {
 
 ## S3 Bucket for backups
 resource "aws_s3_bucket" "backup" {
-  bucket_prefix = "snipeit-backups"
+  bucket_prefix = "snipeit-backups-"
 }
 
 resource "aws_s3_bucket_public_access_block" "backup_access" {

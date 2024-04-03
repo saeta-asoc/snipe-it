@@ -20,15 +20,17 @@ sudo yum install -y docker
 sudo systemctl start docker
 sudo systemctl enable docker
 
-# Add the current user to the docker group
-sudo usermod -aG docker "$USER";
-
 # Install a lower version of urllib3 as the latest version is not compatible with openssl 1.0
 sudo pip3 uninstall -y urllib3
 sudo pip3 install 'urllib3<2.0'
 
 # Install Docker Compose
 sudo pip3 install docker-compose
+
+# Add the current user to the docker group and change the permissions of the docker socket
+# to allow the current user to run docker commands
+sudo usermod -aG docker "$USER"
+sudo chmod 666 /var/run/docker.sock
 
 # Install Git
 sudo yum install -y git

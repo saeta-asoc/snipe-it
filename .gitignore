@@ -4,3 +4,7 @@
 /.direnv/
 /.envrc
 /.installed
+/deployment/.terraform/
+/deployment/.terraform.lock.hcl
+/deployment/terraform.tfvars
+/deployment/.terraform.tfstate.lock.info
