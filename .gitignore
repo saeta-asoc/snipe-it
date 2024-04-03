@@ -1,3 +1,6 @@
 /.env
 /snipeit_db/
 /volumes/
+/.direnv/
+/.envrc
+/deployment/production.tfvars
