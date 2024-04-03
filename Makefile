@@ -2,11 +2,32 @@
 
 # Variables
 PWD := $(shell pwd)
+INSTALLED_FILE := $(PWD)/.installed
+ENV_FILE := $(PWD)/.env
+
+# Load environment variables
+include $(ENV_FILE)
+export $(shell sed 's/=.*//' $(ENV_FILE))
 
 # Targets
-
+# Check if .env file exists
 ## Start services
-up:
+init:
+	@if [ ! -f $(INSTALLED_FILE) ]; then \
+		echo "Installing Snipe-IT..."; \
+		docker-compose up -d; \
+		sleep 5; \
+		docker restart $(SNIPEIT_CONTAINER_NAME); \
+		sleep 2; \
+		docker exec -it $(SNIPEIT_CONTAINER_NAME) chown -R docker:root /var/www/html/storage/logs; \
+		sleep 2; \
+		docker restart $(SNIPEIT_CONTAINER_NAME); \
+		sleep 2; \
+		docker-compose down; \
+		echo "installed" >> $(INSTALLED_FILE); \
+	fi
+
+up: init
 	docker-compose up -d
 
 ## Stop services
@@ -21,30 +42,9 @@ restart:
 logs:
 	docker-compose logs -f
 
-## Show logs for specific service
-logs-%:
-	docker-compose logs -f $*
-
-## Build and start services
-build:
-	docker-compose build
-	docker-compose up -d
-
-## Stop, remove, rebuild and start services
-rebuild: down build
-
-## Show status of services
-ps:
-	docker-compose ps
-
 ## Remove services
-# TODO: add remove volumes folder with env variable in .env file
 rm:
 	docker-compose rm -fsv
+	sudo rm -r -i -f $(VOLUME_ROOT) $(INSTALLED_FILE)
 
-
-## Execute a command inside a service
-exec-%:
-	docker-compose exec $* /bin/bash
-
-.PHONY: up down restart logs logs-% build rebuild ps exec-%
+.PHONY: up down restart logs rm

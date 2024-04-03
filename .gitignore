@@ -3,4 +3,4 @@
 /volumes/
 /.direnv/
 /.envrc
-/deployment/production.tfvars
+/.installed
