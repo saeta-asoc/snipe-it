@@ -122,12 +122,12 @@ resource "aws_security_group" "snipeit" {
 }
 
 ## S3 Bucket for backups
-resource "aws_s3_bucket" "backups" {
-  bucket = "snipeit-backups"
+resource "aws_s3_bucket" "backup" {
+  bucket_prefix = "snipeit-backups"
 }
 
-resource "aws_s3_bucket_public_access_block" "backups" {
-  bucket = aws_s3_bucket.backups.id
+resource "aws_s3_bucket_public_access_block" "backup_access" {
+  bucket = aws_s3_bucket.backup.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -135,8 +135,8 @@ resource "aws_s3_bucket_public_access_block" "backups" {
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_versioning" "backups" {
-  bucket = aws_s3_bucket.backups.id
+resource "aws_s3_bucket_versioning" "backup_versioning" {
+  bucket = aws_s3_bucket.backup.id
   versioning_configuration {
     status = "Enabled"
   }

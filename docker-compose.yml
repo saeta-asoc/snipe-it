@@ -9,6 +9,7 @@ services:
       - ${VOLUME_ROOT}/mysql:/var/lib/mysql
     ports:
       - "${MYSQL_PORT}:3306"
+      #FIXME: dont expose mysql port to the world
 
   snipeit:
     container_name: ${SNIPEIT_CONTAINER_NAME}
