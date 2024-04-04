@@ -3,7 +3,6 @@
 # Variables
 PWD := $(shell pwd)
 INSTALLED_FILE := $(PWD)/.installed
-SNIPEIT_CONTAINER_NAME := snipeit
 ENV_FILE := $(PWD)/.env
 
 # Load environment variables
@@ -18,7 +17,7 @@ init:
 		echo "Installing Snipe-IT..."; \
 		docker-compose up -d; \
 		sleep 2; \
-		docker exec -it $(SNIPEIT_CONTAINER_NAME) chown -R docker:root /var/www/html/storage/logs; \
+		docker exec -it snipeit chown -R docker:root /var/www/html/storage/logs; \
 		docker-compose down; \
 		sudo sh -c 'echo "installed" >> $(INSTALLED_FILE);'; \
 	fi

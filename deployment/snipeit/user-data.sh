@@ -6,6 +6,8 @@ exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
 # Variables
 SNIPEIT_DIR=/opt/snipeit
+S3_BUCKET_NAME=${aws_s3_bucket.my_bucket.bucket}
+echo $S3_BUCKET_NAME >> s3_bucket.txt
 
 # Update the system
 sudo yum update -y

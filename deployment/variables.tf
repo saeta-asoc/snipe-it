@@ -1,21 +1,17 @@
 variable "aws_profile" {
-  type    = string
-  default = null
+  type = string
 }
 
 variable "aws_region" {
-  type    = string
-  default = null
+  type = string
 }
 
 variable "project_name" {
-  type    = string
-  default = null
+  type = string
 }
 
 variable "environment" {
-  type    = string
-  default = null
+  type = string
 }
 
 variable "instance_type" {
@@ -50,4 +46,10 @@ variable "asg_max_size" {
 variable "asg_desired_capacity" {
   type    = number
   default = 1
+}
+
+variable "backup_bucket_prefix" {
+  type        = string
+  default     = "snipeit-backup-"
+  description = "The ARN of the s3 backup bucket"
 }

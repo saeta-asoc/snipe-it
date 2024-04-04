@@ -42,7 +42,7 @@ services:
       - ${VOLUME_ROOT}/ssl_data:/etc/resty-auto-ssl
     environment:
       ALLOWED_DOMAINS: ${DOMAIN_NAME}
-      SITES: "${DOMAIN_NAME}=snipeit:80"
+      SITES: "${DOMAIN_NAME}=snipeit"
     links:
       - snipeit
 
