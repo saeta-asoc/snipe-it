@@ -22,7 +22,7 @@ variable "asg_desired_capacity" {
   type = number
 }
 
-variable "backup_bucket_arn" {
+variable "backup_bucket_name" {
   type        = string
-  description = "The ARN of the s3 backup bucket"
+  description = "The NAME of the s3 backup bucket"
 }

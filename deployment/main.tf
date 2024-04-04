@@ -25,5 +25,5 @@ module "snipeit" {
   asg_max_size         = var.asg_max_size
   asg_desired_capacity = var.asg_desired_capacity
 
-  backup_bucket_arn = module.infrastructure.backup_bucket_arn
+  backup_bucket_name = module.infrastructure.backup_bucket_name
 }

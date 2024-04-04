@@ -1,9 +1,8 @@
-/.env
-/snipeit_db/
-/volumes/
+/src/.env
+/src/volumes/
 /.direnv/
 /.envrc
-/.installed
+/src/.installed
 /deployment/.terraform/
 /deployment/.terraform.lock.hcl
 /deployment/terraform.tfvars

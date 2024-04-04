@@ -41,9 +41,18 @@ restart:
 logs:
 	docker-compose logs -f
 
+## Backup
+backup:
+	sudo rm -r -f ${BACKUP_FILE}
+	docker exec -it snipeit php artisan passport:install
+	docker exec -it snipeit php artisan snipeit:backup --filename=backup
+	aws s3 cp ${BACKUP_FILE} s3://${S3_BUCKET_DOMAIN}
+
 ## Remove services
 rm:
+	BACKUP_DIR := ${VOLUME_ROOT}/snipeit/dumps
+	BACKUP_FILE := ${BACKUP_DIR}/snipe-it-backup.zip
 	docker-compose rm -fsv
-	sudo rm -r -i -f $(VOLUME_ROOT) $(INSTALLED_FILE)
+	rm -r -f $(VOLUME_ROOT) $(INSTALLED_FILE) #FIXME: VOLUME_ROOT is not defined when executing
 
 .PHONY: up down restart logs rm
