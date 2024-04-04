@@ -1,6 +1,6 @@
 resource "aws_key_pair" "snipeit" {
   key_name   = "snipeit"
-  public_key = file("./web_key.pub")
+  public_key = file("${path.module}/web_key.pub")
 }
 
 data "aws_iam_policy_document" "assume_role_policy" {

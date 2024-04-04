@@ -32,7 +32,7 @@ services:
       - mysql
 
   nginx:
-    container_name: snipeit_nginx
+    container_name: snipeit-nginx
     image: valian/docker-nginx-auto-ssl
     restart: unless-stopped
     ports:
@@ -42,7 +42,7 @@ services:
       - ${VOLUME_ROOT}/ssl_data:/etc/resty-auto-ssl
     environment:
       ALLOWED_DOMAINS: ${DOMAIN_NAME}
-      SITES: "${DOMAIN_NAME}=snipeit"
+      SITES: "${DOMAIN_NAME}=snipeit:80"
     links:
       - snipeit
 

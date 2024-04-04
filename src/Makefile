@@ -25,9 +25,13 @@ init:
 up: init
 	docker-compose up -d
 
-## Stop services
+## Shut down services
 down:
 	docker-compose down
+
+## Stop services
+stop:
+	docker-compose stop
 
 ## Restart services
 restart:
