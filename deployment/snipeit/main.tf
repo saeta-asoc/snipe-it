@@ -56,9 +56,17 @@ resource "aws_launch_template" "snipeit" {
 
   # it is not in a different file as I need to use the s3 bucket
   user_data = base64encode(<<-EOF
-              #!/bin/bash
               #!/usr/bin/env bash
               # This script installs Snipe-IT on a Amazon Linux 2 instance
+
+              # Check if the script is running as root
+              if [ "$EUID" -ne 0 ]; then
+                  echo "This script must be run as root. Attempting to elevate privileges..."
+                  exec sudo "$0" "$@"
+              fi
+
+              # Your script commands go here
+              echo "Running as root now."
 
               # Enable logging and redirect user-data ouptut to /var/log/user-data.log
               exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
@@ -67,46 +75,46 @@ resource "aws_launch_template" "snipeit" {
               SNIPEIT_DIR=/opt/snipeit
               SNIPEIT_SRC_DIR=$SNIPEIT_DIR/src
               ENV_FILEPATH=$SNIPEIT_SRC_DIR/.env
-              S3_BUCKET_DOMAIN=${var.backup_bucket_name}
-              ENV_FILEPATH_REMOTE=s3://$S3_BUCKET_DOMAIN/.env
+              S3_BUCKET_NAME=${var.backup_bucket_name}
+              ENV_FILEPATH_REMOTE=s3://$S3_BUCKET_NAME/.env
 
               # Update the system
-              sudo yum update -y
+              yum update -y
 
               # Install required dependencies
-              sudo yum install -y yum-utils
+              yum install -y yum-utils
 
               # Install Docker
-              sudo yum install -y docker
+              yum install -y docker
 
               # Start and enable Docker
-              sudo systemctl start docker
-              sudo systemctl enable docker
+              systemctl start docker
+              systemctl enable docker
 
               # Install a lower version of urllib3 as the latest version is not compatible with openssl 1.0
-              sudo pip3 uninstall -y urllib3
-              sudo pip3 install 'urllib3<2.0'
+              pip3 uninstall -y urllib3
+              pip3 install 'urllib3<2.0'
 
               # Install Docker Compose
-              sudo pip3 install docker-compose
+              pip3 install docker-compose
 
               # Add the current user to the docker group and change the permissions of the docker socket
               # to allow the current user to run docker commands
-              sudo usermod -aG docker "$USER"
-              sudo chmod 666 /var/run/docker.sock
+              usermod -aG docker "$USER"
+              chmod 666 /var/run/docker.sock
 
               # Install Git
-              sudo yum install -y git
+              yum install -y git
 
               # Clone the Snipe-IT repository
-              sudo git clone --depth 1 https://github.com/saeta-asoc/snipe-it.git $SNIPEIT_DIR
+              git clone --depth 1 https://github.com/saeta-asoc/snipe-it.git $SNIPEIT_DIR
 
               # Download the .env file
-              sudo aws s3 cp $ENV_FILEPATH_REMOTE $ENV_FILEPATH
-              echo "S3_BUCKET_DOMAIN=$S3_BUCKET_DOMAIN" | sudo tee -a $ENV_FILEPATH
+              aws s3 cp $ENV_FILEPATH_REMOTE $ENV_FILEPATH
+              echo "S3_BUCKET_NAME=$S3_BUCKET_NAME" | tee -a $ENV_FILEPATH
 
               # Cron job to backup the database. Make sure to run as sudo
-              echo "0 5 * * * make -C $SNIPEIT_SRC_DIR backup" | sudo crontab -
+              echo "0 5 * * * make -C $SNIPEIT_SRC_DIR backup" | crontab -
 
               # Run the project
               make -C $SNIPEIT_SRC_DIR up

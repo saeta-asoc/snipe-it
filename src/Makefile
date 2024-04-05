@@ -9,6 +9,9 @@ ENV_FILE := $(PWD)/.env
 include $(ENV_FILE)
 export $(shell sed 's/=.*//' $(ENV_FILE))
 
+BACKUP_DIR=${VOLUME_ROOT}/snipeit/dumps
+BACKUP_FILE=${BACKUP_DIR}/snipe-it-backup.zip
+
 # Targets
 # Check if .env file exists
 ## Start services
@@ -43,16 +46,15 @@ logs:
 
 ## Backup
 backup:
-	sudo rm -r -f ${BACKUP_FILE}
+	echo "Backup file: ${BACKUP_FILE}"
+	rm -r -f ${BACKUP_FILE}
 	docker exec -it snipeit php artisan passport:install
 	docker exec -it snipeit php artisan snipeit:backup --filename=backup
-	aws s3 cp ${BACKUP_FILE} s3://${S3_BUCKET_DOMAIN}
+	aws s3 cp ${BACKUP_FILE} s3://${S3_BUCKET_NAME}
 
 ## Remove services
 rm:
-	BACKUP_DIR := ${VOLUME_ROOT}/snipeit/dumps
-	BACKUP_FILE := ${BACKUP_DIR}/snipe-it-backup.zip
 	docker-compose rm -fsv
-	rm -r -f $(VOLUME_ROOT) $(INSTALLED_FILE) #FIXME: VOLUME_ROOT is not defined when executing
+	rm -r -f $(VOLUME_ROOT) $(INSTALLED_FILE)
 
 .PHONY: up down restart logs rm
